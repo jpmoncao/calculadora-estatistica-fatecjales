@@ -132,6 +132,8 @@
 .container {
   /* 100vh - footer height - header height */
   min-height: calc(100vh - 2rem - 5rem);
+  max-width: 800px;
+  margin: 0 auto;
 }
 
 button {
