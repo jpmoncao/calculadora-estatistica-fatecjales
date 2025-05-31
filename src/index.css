@@ -4,6 +4,8 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
+  font-family: "Raleway", sans-serif;
+
   --radius: 0.65rem;
   --background: oklch(1 0 0);
   --foreground: oklch(0.141 0.005 285.823);
@@ -110,6 +112,10 @@
   --color-sidebar-ring: var(--sidebar-ring);
 }
 
+@theme {
+  --font-math: "IBM Plex Mono", monospace;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
@@ -133,7 +139,8 @@
   /* 100vh - footer height - header height */
   min-height: calc(100vh - 2rem - 5rem);
   max-width: 800px;
-  margin: 0 auto;
+  margin: 0 auto ;
+  padding-top: 1rem;
 }
 
 button {
