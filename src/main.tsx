@@ -5,6 +5,7 @@ import { BrowserRouter, Route, Routes } from 'react-router'
 
 import Header from '@/components/common/header'
 import Home from '@/pages/home'
+import About from '@/pages/about'
 
 createRoot(document.getElementById('root')!).render(
   <BrowserRouter>
@@ -12,6 +13,7 @@ createRoot(document.getElementById('root')!).render(
 
     <Routes>
       <Route path="/" element={<Home />} />
+      <Route path="/sobre" element={<About />} />
     </Routes>
 
     <footer className='w-full h-8 bg-background border-t-2 border-primary text-primary text-center'>
