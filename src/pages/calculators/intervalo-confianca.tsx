@@ -17,7 +17,11 @@ export default function IntervaloCobranca() {
     return (
         <main className="container">
             <div className="flex flex-col items-center justify-center gap-4 mt-8 text-center">
-                <h1 className="font-math text-3xl font-semibold">Calculadora <br /> Intervalo de Confiança</h1>
+                <div>
+                    <h1 className="text-2xl font-extrabold">Calculadora </h1>
+                    <h1 className="font-math text-3xl font-">Intervalo de Confiança</h1>
+                </div>
+
                 <p className="text-sm max-w-2/3">Calcule o intervalo de confiança para a média ou proporção de uma população com base em sua amostra.</p>
 
                 <Select onValueChange={handleSelectChange}>
