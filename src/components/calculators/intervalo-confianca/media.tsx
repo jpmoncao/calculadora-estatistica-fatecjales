@@ -93,7 +93,7 @@ export default function CalculadoraIntervaloConfiancaMedia() {
                 maximumFractionDigits: 2
             }));
         } catch (error) {
-            console.error("Form submission error", error);
+            console.error("Erro ao calcular intervalo de confiança", error);
             toast.error("Falha ao calcular. Verifique os dados.");
         }
     }
@@ -207,7 +207,7 @@ export default function CalculadoraIntervaloConfiancaMedia() {
                                 <Input
                                     placeholder=""
                                     disabled
-                                    className="bg-muted text-destructive"
+                                    className="font-bold bg-muted text-destructive"
                                     {...field} />
                             </FormControl>
 
