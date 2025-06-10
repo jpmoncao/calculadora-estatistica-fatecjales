@@ -6,6 +6,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Link } from "react-router";
 
 export default function Home() {
   return (
@@ -20,7 +21,9 @@ export default function Home() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <Button variant={"outline"}>Abrir calculadora</Button>
+          <Link to="/calculadora-intervalo-confianca">
+            <Button variant={"outline"}>Abrir calculadora</Button>
+          </Link>
         </CardContent>
       </Card>
 
@@ -34,7 +37,9 @@ export default function Home() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <Button variant={"outline"}>Abrir calculadora</Button>
+          <Link to="/calculadora-tamanho-amostra">
+            <Button variant={"outline"}>Abrir calculadora</Button>
+          </Link>
         </CardContent>
       </Card>
     </main>
