@@ -36,7 +36,7 @@ const formSchema = z.object({
     'grau-de-confianca': z.string({
         required_error: "O valor de grau de confiança é obrigatório.",
     }),
-    'erro-media': z.string().optional(),
+    'erro-padrao': z.string().optional(),
     'intervalo-confianca-min': z.string().optional(),
     'intervalo-confianca-max': z.string().optional()
 });
@@ -52,8 +52,8 @@ export default function CalculadoraIntervaloConfiancaProporcao() {
     });
 
     React.useEffect(() => {
-        if (proporcao < 0 || proporcao > 1) {
-            form.setValue("resto-proporcao", undefined, {
+        if (proporcao < 0 || proporcao > 1 || !proporcao) {
+            form.setValue("resto-proporcao", 0.00, {
                 shouldValidate: true,
                 shouldDirty: true,
             });
@@ -73,7 +73,7 @@ export default function CalculadoraIntervaloConfiancaProporcao() {
             const p = values.proporcao;
             const q = 1 - p;
             const n = values['tamanho-amostra'];
-            const z = values['grau-de-confianca'];
+            const z = parseFloat(values['grau-de-confianca']);
 
             const erroPadrao = z * Math.sqrt((p * q) / n);
 
@@ -85,7 +85,7 @@ export default function CalculadoraIntervaloConfiancaProporcao() {
                 return;
             }
 
-            form.setValue('erro-media', erroPadrao.toLocaleString('pt-BR', {
+            form.setValue('erro-padrao', erroPadrao.toLocaleString('pt-BR', {
                 minimumFractionDigits: 2,
                 maximumFractionDigits: 2
             }));
@@ -208,15 +208,15 @@ export default function CalculadoraIntervaloConfiancaProporcao() {
                 </div>
                 <FormField
                     control={form.control}
-                    name="erro-media"
+                    name="erro-padrao"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Erro de Média (Em)</FormLabel>
+                            <FormLabel>Erro Padrão (Ep)</FormLabel>
                             <FormControl>
                                 <Input
                                     placeholder=""
                                     disabled
-                                    className="bg-muted text-destructive"
+                                    className="font-bold bg-muted text-destructive"
                                     {...field} />
                             </FormControl>
 
