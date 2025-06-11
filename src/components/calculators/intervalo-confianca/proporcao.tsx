@@ -109,7 +109,7 @@ export default function CalculadoraIntervaloConfiancaProporcao() {
 
     return (
         <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 max-w-3xl mx-auto py-10 bg-secondary rounded-2xl px-8 mb-16 transition-all duration-300 ease-in shadow-lg ">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 max-w-3xl mx-auto py-10 border rounded-2xl px-8 mb-16 transition-all duration-300 ease-in shadow-lg ">
                 <div className="grid grid-cols-12 gap-4 w-full">
                     <div className="col-span-6">
                         <FormField
