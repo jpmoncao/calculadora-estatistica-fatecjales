@@ -1,4 +1,7 @@
 import React from "react";
+import { Link } from "react-router";
+import { ArrowLeftSquare } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { Select, SelectTrigger, SelectItem, SelectContent, SelectValue } from "@/components/ui/select";
 import CalculadoraTamanhoAmostraMedia from "@/components/calculators/tamanhoamostra/media";
 import CalculadoraTamanhoAmostraProporcao from "@/components/calculators/tamanhoamostra/proporcao";
@@ -17,6 +20,10 @@ export default function TamanhoAmostra() {
   return (
     <main className="container">
       <div className="flex flex-col items-center justify-center gap-4 mt-8 text-center">
+        <Link to="/" className="self-start">
+          <Button variant="outline"><ArrowLeftSquare /> Voltar</Button>
+        </Link>
+
         <div>
           <h1 className="text-2xl font-extrabold">Calculadora </h1>
           <h1 className="font-math text-3xl font-">Tamanho da Amostra</h1>
