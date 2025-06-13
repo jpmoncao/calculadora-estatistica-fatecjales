@@ -2,6 +2,7 @@ import React from "react";
 import CalculadoraIntervaloConfiancaMedia from "@/components/calculators/intervalo-confianca/media";
 import CalculadoraIntervaloConfiancaProporcao from "@/components/calculators/intervalo-confianca/proporcao";
 import { Select, SelectTrigger, SelectItem, SelectContent, SelectValue } from "@/components/ui/select";
+import ConfidenceTableModal from "@/components/calculators/confidence-table";
 
 export default function IntervaloCobranca() {
     const [calculadora, setCalculadora] = React.useState<"media" | "proporcao" | null>(null);
@@ -24,15 +25,19 @@ export default function IntervaloCobranca() {
 
                 <p className="text-sm max-w-2/3">Calcule o intervalo de confiança para a média ou proporção de uma população com base em sua amostra.</p>
 
-                <Select onValueChange={handleSelectChange}>
-                    <SelectTrigger>
-                        <SelectValue placeholder="Selecione um tipo de cálculo" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        <SelectItem value="media">Média</SelectItem>
-                        <SelectItem value="proporcao">Proporção</SelectItem>
-                    </SelectContent>
-                </Select>
+                <div className="flex gap-2">
+                    <Select onValueChange={handleSelectChange}>
+                        <SelectTrigger>
+                            <SelectValue placeholder="Selecione um tipo de cálculo" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="media">Média</SelectItem>
+                            <SelectItem value="proporcao">Proporção</SelectItem>
+                        </SelectContent>
+                    </Select>
+
+                    <ConfidenceTableModal />
+                </div>
 
                 {calculadora === "media" && <CalculadoraIntervaloConfiancaMedia />}
                 {calculadora === "proporcao" && <CalculadoraIntervaloConfiancaProporcao />}
