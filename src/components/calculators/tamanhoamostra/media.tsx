@@ -21,79 +21,66 @@ import {
     SelectContent,
     SelectItem,
 } from "@/components/ui/select";
+import { ArrowRight } from "lucide-react"
 
 const formSchema = z.object({
-    media: z.coerce.number({
-        required_error: "A média é obrigatória.",
-        invalid_type_error: "Informe um número válido para a média.",
-    }).min(0, { message: "A média deve ser maior ou igual a 0." }),
-
     'desvio-padrao': z.coerce.number({
         required_error: "O desvio padrão é obrigatório.",
         invalid_type_error: "Informe um número válido para o desvio padrão.",
     }).min(0, { message: "O desvio padrão deve ser maior ou igual a 0." }),
-
-    'tamanho-amostra': z.coerce.number({
-        required_error: "O tamanho da amostra é obrigatório.",
-        invalid_type_error: "Informe um número válido para o tamanho da amostra.",
-    }).min(0, { message: "O tamanho da amostra deve ser maior ou igual a 0." }),
-
-    alfa: z.string({
-        required_error: "O nível de significância (alfa) é obrigatório.",
+    'grau-de-confianca': z.string({
+        required_error: "O grau de confiança é obrigatório.",
     }),
-
-    'erro-media': z.string().optional(),
-    'intervalo-confianca-min': z.string().optional(),
-    'intervalo-confianca-max': z.string().optional()
+    'erro-media': z.coerce.number({
+        required_error: "O desvio padrão é obrigatório.",
+        invalid_type_error: "Informe um número válido para o desvio padrão.",
+    }).min(0, { message: "O desvio padrão deve ser maior ou igual a 0." }),
+    'tamanho-amostra': z.string().optional(),
+    'tamanho-amostra-aprox': z.string().optional()
 });
 
-export default function CalculadoraIntervaloConfiancaMedia() {
+export default function CalculadoraTamanhoAmostraMedia() {
     const form = useForm({
         resolver: zodResolver(formSchema),
     });
 
     function onSubmit(values: z.infer<typeof formSchema>) {
         try {
-            const alfa = Number(values.alfa);
-            if (![0.10, 0.05, 0.01].includes(alfa)) {
-                toast.error("Selecione um valor válido para alfa.");
-                return;
-            }
-
-            // Mapeamento simples alfa → z
+            const desvioPadrao = values['desvio-padrao'];
+            const grauConfianca = parseFloat(values['grau-de-confianca']);
+            const erroMedia = values['erro-media'];
+       
             const zMap: Record<number, number> = {
-                0.10: 1.645,
-                0.05: 1.96,
-                0.01: 2.576,
+                0.90: 1.645,
+                0.95: 1.96,
+                0.99: 2.576,
             };
-            const z = zMap[alfa];
+            const z = zMap[grauConfianca];
 
-            const erroMedia = (values['desvio-padrao'] / Math.sqrt(values['tamanho-amostra'])) * z;
-
-            const inferior = values.media - erroMedia;
-            const superior = values.media + erroMedia;
-
-            if (isNaN(inferior) || isNaN(superior) || isNaN(erroMedia)) {
-                toast.error("O intervalo de confiança não pode ser calculado com os valores fornecidos.");
+            if (!z) {
+                toast.error("Grau de confiança inválido. Selecione 90%, 95% ou 99%.");
                 return;
             }
 
-            form.setValue('erro-media', erroMedia.toLocaleString('pt-BR', {
+            const tamanhoAmostra = (desvioPadrao * z / erroMedia) ** 2;
+
+            if (isNaN(tamanhoAmostra) || tamanhoAmostra <= 0) {
+                toast.error("O tamanho da amostra não pode ser calculado com os valores fornecidos.");
+                return;
+            }
+
+            const tamanhoAmostraAproximado = Math.ceil(tamanhoAmostra);
+
+            form.setValue('tamanho-amostra', tamanhoAmostra.toLocaleString('pt-BR', {
                 minimumFractionDigits: 2,
                 maximumFractionDigits: 2
             }));
 
-            form.setValue('intervalo-confianca-min', inferior.toLocaleString('pt-BR', {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2
-            }));
-
-            form.setValue('intervalo-confianca-max', superior.toLocaleString('pt-BR', {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2
+            form.setValue('tamanho-amostra-aprox', tamanhoAmostraAproximado.toLocaleString('pt-BR', {
+                maximumFractionDigits: 0
             }));
         } catch (error) {
-            console.error("Erro ao calcular intervalo de confiança", error);
+            console.error("Erro ao calcular tamanho da amostra", error);
             toast.error("Falha ao calcular. Verifique os dados.");
         }
     }
@@ -105,16 +92,25 @@ export default function CalculadoraIntervaloConfiancaMedia() {
                     <div className="col-span-6">
                         <FormField
                             control={form.control}
-                            name="media"
+                            name="grau-de-confianca"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Média</FormLabel>
+                                    <FormLabel>Grau de Confiança (z)</FormLabel>
                                     <FormControl>
-                                        <Input
-                                            placeholder="0,00"
-                                            type="number"
-                                            step="0.01"
-                                            {...field} />
+                                        <Select
+                                            onValueChange={field.onChange}
+                                            value={field.value || ""}
+                                            defaultValue=""
+                                        >
+                                            <SelectTrigger className="w-full">
+                                                <SelectValue placeholder="Selecione..." />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="0.9">90%</SelectItem>
+                                                <SelectItem value="0.95">95%</SelectItem>
+                                                <SelectItem value="0.99">99%</SelectItem>
+                                            </SelectContent>
+                                        </Select>
                                     </FormControl>
 
                                     <FormMessage className="relative text-xs text-red-500 mt-1 text-start" />
@@ -143,20 +139,16 @@ export default function CalculadoraIntervaloConfiancaMedia() {
                         />
 
                     </div>
-                </div>
-
-                <div className="grid grid-cols-12 gap-4 w-full">
                     <div className="col-span-6">
                         <FormField
                             control={form.control}
-                            name="tamanho-amostra"
+                            name="erro-media"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Tamanho da amostra (n)</FormLabel>
+                                    <FormLabel>Erro de Média (Em)</FormLabel>
                                     <FormControl>
                                         <Input
-                                            placeholder="0"
-                                            type="number"
+                                            placeholder=""
                                             {...field} />
                                     </FormControl>
 
@@ -166,64 +158,15 @@ export default function CalculadoraIntervaloConfiancaMedia() {
                             )}
                         />
                     </div>
-                    <div className="col-span-6">
-                        <FormField
-                            control={form.control}
-                            name="alfa"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Alfa (α)</FormLabel>
-                                    <FormControl>
-                                        <Select
-                                            onValueChange={field.onChange}
-                                            value={field.value || ""}
-                                            defaultValue=""
-                                        >
-                                            <SelectTrigger className="w-full">
-                                                <SelectValue placeholder="Selecione..." />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                <SelectItem value="0.10">0,10</SelectItem>
-                                                <SelectItem value="0.05">0,05</SelectItem>
-                                                <SelectItem value="0.01">0,01</SelectItem>
-                                            </SelectContent>
-                                        </Select>
-                                    </FormControl>
-
-                                    <FormMessage className="relative text-xs text-red-500 mt-1 text-start" />
-                                </FormItem>
-                            )}
-                        />
-
-                    </div>
                 </div>
-                <FormField
-                    control={form.control}
-                    name="erro-media"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Erro de Média (Em)</FormLabel>
-                            <FormControl>
-                                <Input
-                                    placeholder=""
-                                    disabled
-                                    className="font-bold bg-muted text-destructive"
-                                    {...field} />
-                            </FormControl>
 
-
-                            <FormMessage className="relative text-xs text-red-500 mt-1 text-start" />
-                        </FormItem>
-                    )}
-                />
-
-                <FormLabel>Intervalo de Confiança</FormLabel>
+                <FormLabel>Tamanho da Amostra</FormLabel>
 
                 <div className="grid grid-cols-12 gap-4 w-full items-center text-center">
                     <div className="col-span-5">
                         <FormField
                             control={form.control}
-                            name="intervalo-confianca-min"
+                            name="tamanho-amostra"
                             render={({ field }) => (
                                 <FormItem>
                                     <FormControl>
@@ -240,11 +183,11 @@ export default function CalculadoraIntervaloConfiancaMedia() {
                             )}
                         />
                     </div>
-                    <div className="col-span-2"><span className="text-foreground font-bold">&lt; π &lt;</span></div>
+                    <div className="col-span-2"><ArrowRight className="mx-auto" /></div>
                     <div className="col-span-5">
                         <FormField
                             control={form.control}
-                            name="intervalo-confianca-max"
+                            name="tamanho-amostra-aprox"
                             render={({ field }) => (
                                 <FormItem>
                                     <FormControl>

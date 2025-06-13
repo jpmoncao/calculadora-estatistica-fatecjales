@@ -1,7 +1,10 @@
 import React from "react";
+import { Link } from "react-router";
+import { ArrowLeftSquare } from "lucide-react";
 import CalculadoraIntervaloConfiancaMedia from "@/components/calculators/intervalo-confianca/media";
 import CalculadoraIntervaloConfiancaProporcao from "@/components/calculators/intervalo-confianca/proporcao";
 import { Select, SelectTrigger, SelectItem, SelectContent, SelectValue } from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
 import ConfidenceTableModal from "@/components/calculators/confidence-table";
 
 export default function IntervaloCobranca() {
@@ -18,6 +21,9 @@ export default function IntervaloCobranca() {
     return (
         <main className="container">
             <div className="flex flex-col items-center justify-center gap-4 mt-8 text-center">
+                <Link to="/" className="self-start">
+                    <Button variant="outline"><ArrowLeftSquare /> Voltar</Button>
+                </Link>
                 <div>
                     <h1 className="text-2xl font-extrabold">Calculadora </h1>
                     <h1 className="font-math text-3xl font-">Intervalo de Confiança</h1>

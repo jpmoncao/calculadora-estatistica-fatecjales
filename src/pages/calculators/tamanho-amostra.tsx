@@ -1,7 +1,10 @@
 import React from "react";
-import CalculadoraIntervaloConfiancaMedia from "@/components/calculators/intervalo-confianca/media";
-import CalculadoraIntervaloConfiancaProporcao from "@/components/calculators/intervalo-confianca/proporcao";
+import { Link } from "react-router";
+import { ArrowLeftSquare } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { Select, SelectTrigger, SelectItem, SelectContent, SelectValue } from "@/components/ui/select";
+import CalculadoraTamanhoAmostraMedia from "@/components/calculators/tamanhoamostra/media";
+import CalculadoraTamanhoAmostraProporcao from "@/components/calculators/tamanhoamostra/proporcao";
 import ConfidenceTableModal from "@/components/calculators/confidence-table";
 
 export default function TamanhoAmostra() {
@@ -18,12 +21,16 @@ export default function TamanhoAmostra() {
   return (
     <main className="container">
       <div className="flex flex-col items-center justify-center gap-4 mt-8 text-center">
+        <Link to="/" className="self-start">
+          <Button variant="outline"><ArrowLeftSquare /> Voltar</Button>
+        </Link>
+
         <div>
           <h1 className="text-2xl font-extrabold">Calculadora </h1>
-          <h1 className="font-math text-3xl font-">Tamanho amostra</h1>
+          <h1 className="font-math text-3xl font-">Tamanho da Amostra</h1>
         </div>
 
-        <p className="text-sm max-w-2/3">Calcule o tamanho da amostra para a média ou proporção de uma população com base em sua amostra.</p>
+        <p className="text-sm max-w-2/3">Calcule o tamanho da amostra necessário para estimar a média ou proporção de uma população com base em sua margem de erro e nível de confiança.</p>
 
         <div className="flex gap-2">
           <Select onValueChange={handleSelectChange}>
@@ -39,8 +46,8 @@ export default function TamanhoAmostra() {
           <ConfidenceTableModal />
         </div>
 
-        {calculadora === "media" && <CalculadoraIntervaloConfiancaMedia />}
-        {calculadora === "proporcao" && <CalculadoraIntervaloConfiancaProporcao />}
+        {calculadora === "media" && <CalculadoraTamanhoAmostraMedia />}
+        {calculadora === "proporcao" && <CalculadoraTamanhoAmostraProporcao />}
 
       </div>
     </main>
